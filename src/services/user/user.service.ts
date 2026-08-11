@@ -1,19 +1,54 @@
-import bcrypt from "bcrypt";
 import { prisma } from "../../lib/prisma.js";
 
-export const registerUser = async (data: {name: string; email:string; password: string}) => {
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-    return prisma.user.create({
-        data:{...data, password: hashedPassword}
-    })
-}
+export const getAllUsers = () => {
+  return prisma.user.findMany({
+    where: { isDeleted: false },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+};
 
-export const loginUser = async (email: string, password: string) => {
-  const user = await prisma.user.findFirst({ where: { email, isDeleted: false } });
-  if (!user) throw new Error("User not found");
+export const getUserById = (id: string) => {
+  return prisma.user.findFirst({
+    where: { id, isDeleted: false },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+};
 
-  const isValid = await bcrypt.compare(password, user.password);
-  if (!isValid) throw new Error("Invalid credentials");
+export const updateUser = (
+  id: string,
+  data: Partial<{ name: string; email: string }>,
+) => {
+  return prisma.user.update({
+    where: { id },
+    data,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      updatedAt: true,
+    },
+  });
+};
 
-  return user;
+export const softDeleteUser = (id: string) => {
+  return prisma.user.update({
+    where: { id },
+    data: { isDeleted: true },
+  });
 };

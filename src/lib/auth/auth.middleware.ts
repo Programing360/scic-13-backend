@@ -39,3 +39,16 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
     });
   }
 };
+
+export const requireRole = (...roles: Array<"ADMIN" | "USER">) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden — insufficient permissions",
+        data: null,
+      });
+    }
+    next();
+  };
+};
