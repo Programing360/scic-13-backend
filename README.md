@@ -338,6 +338,7 @@ All models use soft delete (`isDeleted` flag) instead of hard deletion.
 
 - **Live API URL:** https://scic-13-backend.onrender.com
 - **GitHub Repository:** https://github.com/Programing360/scic-13-backend
+- **api Doc:** https://documenter.getpostman.com/view/56130988/2sBY4WowcL
 
 ## Author
 
